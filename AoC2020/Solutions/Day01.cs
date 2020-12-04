@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AoC2020.Solutions
@@ -10,8 +11,9 @@ namespace AoC2020.Solutions
 	{
 		private readonly ISet<int> _nums;
 
-		public Day01(IEnumerable<string> input)
+		public Day01(string input)
 			=> _nums = input
+				.Split(Environment.NewLine)
 				.Select(int.Parse)
 				.ToHashSet();
 

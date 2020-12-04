@@ -59,3 +59,36 @@ In my revised code, I accounted for the fact that there was a lot of repeating c
 | ------------- | ------------- | 
 | A | ~15 Minutes. | 
 | B | ~4 Minutes. | 
+
+### [Day 4](https://adventofcode.com/2020/day/4)
+This question got me pretty hard. Well, not really. I spent a very long time on this question because I didn't fully copy and paste my input, which led to an hour of debugging. Guess I should have heeded AoC's suggestion.
+
+Part (A) was straightforward. Given the string input, I decided to split the string input by two newlines. That way, each element in the split string (array) would just be the passport information. An example of what this array could look like is shown below.
+```
+{
+	"ecl:gry pid:860033327 eyr:2020 hcl:#fffffd \nbyr:1937 iyr:2017 cid:147 hgt:183cm",
+	"iyr:2013 ecl:amb cid:350 eyr:2023 \npid:028048884 hcl:#cfa07d byr:1929"
+	// rest of elements
+}
+```
+
+I iterated through each passport in the list of passports. Right after a new iteration, I defined a temporary array that would hold all the properties found (excluding "cid").
+
+From there, I split each passport by one newline, then proceeded to iterate through each line. 
+- For each key/value pair I parsed, I put the key in the temporary array. 
+
+After I parsed through each line in the passport, I checked to see if the length of the temporary array was 7. Remember: since the question stated that we didn't need to check for "cid," and the question never stated that there would be duplicate entries.
+
+Part (B) was also straightforward; however, it was tedious. I started by defining a bunch of inline functions. Each function is designed to basically validate the input of a specific key/value pair. For example, I had a function called "checkByr" that checked whether the value corresponding to the "byr" key was valid or not. 
+
+
+I basically copied my code from part (A), but made use of a dictionary instead of a temporary array. The dictionary would hold the keys and values (as it should). Then, I checked to make sure that the length of the dictionary was 7. If it's not 7, then it's automatically an invalid dictionary. Next, basically had a boolean expression that called each function to make sure the passport was good. If every function returns true, then it's valid.
+
+So, what exactly happened with my input? I honestly don't know. In my head, I knew exactly what to do. I ended up writing a few different implementations for part (A) before realizing (after an hour and a half) that my input wasn't fully copied and pasted.
+
+Regardless, it was a fun puzzle. I spent a lot of time, but at least I know that I should double check my input to ensure that it's correct.
+
+| Part  | Time Taken |
+| ------------- | ------------- | 
+| A | ~72 Minutes. | 
+| B | ~54 Minutes. | 

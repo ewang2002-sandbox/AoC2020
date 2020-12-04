@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AoC2020.Solutions
@@ -10,8 +11,10 @@ namespace AoC2020.Solutions
 	{
 		private readonly IList<string> _input;
 
-		public Day02(IList<string> input)
-			=> _input = input;
+		public Day02(string input)
+			=> _input = input
+				.Split(Environment.NewLine)
+				.ToList();
 
 		public override string SolvePart1()
 		{

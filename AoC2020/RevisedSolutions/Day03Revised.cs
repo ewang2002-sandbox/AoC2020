@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AoC2020.RevisedSolutions
@@ -7,8 +8,10 @@ namespace AoC2020.RevisedSolutions
 	{
 		private readonly IList<string> _input;
 
-		public Day03Revised(IList<string> input)
-			=> _input = input;
+		public Day03Revised(string input)
+			=> _input = input
+				.Split(Environment.NewLine)
+				.ToList();
 
 		public int ComputeTrees(int right, int down)
 		{

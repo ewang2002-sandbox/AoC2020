@@ -1,14 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AoC2020.Solutions
 {
+	/// <summary>
+	/// https://adventofcode.com/2020/day/3
+	/// </summary>
 	public class Day03 : BaseDay
 	{
 		private readonly IList<string> _input;
 
-		public Day03(IList<string> input)
-			=> _input = input;
+		public Day03(string input)
+			=> _input = input
+				.Split(Environment.NewLine)
+				.ToList();
 
 		public override string SolvePart1()
 		{
