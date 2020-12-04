@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace AoC2020.Solutions
 {
@@ -17,7 +14,7 @@ namespace AoC2020.Solutions
 		public Day04(string input)
 			=> _input = input
 				.Split(Environment.NewLine + Environment.NewLine)
-				.ToArray();
+				.ToList();
 
 		// 254
 		public override string SolvePart1()
@@ -46,25 +43,25 @@ namespace AoC2020.Solutions
 		public override string SolvePart2()
 		{
 			// define relevant functions
-			bool CheckByr(string input)
+			static bool CheckByr(string input)
 			{
 				var parsedVal = int.Parse(input);
 				return 1920 <= parsedVal && parsedVal <= 2002;
 			}
 
-			bool CheckIyr(string input)
+			static bool CheckIyr(string input)
 			{
 				var parsedVal = int.Parse(input);
 				return 2010 <= parsedVal && parsedVal <= 2020;
 			}
 
-			bool CheckEyr(string input)
+			static bool CheckEyr(string input)
 			{
 				var parsedVal = int.Parse(input);
 				return 2020 <= parsedVal && parsedVal <= 2030;
 			}
 
-			bool CheckHgt(string input)
+			static bool CheckHgt(string input)
 			{
 				if (input.EndsWith("cm"))
 				{
@@ -81,20 +78,20 @@ namespace AoC2020.Solutions
 				return false;
 			}
 
-			bool CheckHcl(string input)
+			static bool CheckHcl(string input)
 			{
 				if (input.Length != 7) return false;
 				if (input[0] != '#') return false;
 				return input[1..].Count(x => 'a' <= x && x <= 'f' || char.IsNumber(x)) == 6;
 			}
 
-			bool CheckEcl(string input)
+			static bool CheckEcl(string input)
 			{
 				var poss = new[] {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
 				return poss.Contains(input);
 			}
 
-			bool CheckPid(string input) => input.Length == 9 && input.Count(char.IsNumber) == 9;
+			static bool CheckPid(string input) => input.Length == 9 && input.Count(char.IsNumber) == 9;
 
 			var validPw = 0;
 			foreach (var passport in _input)
