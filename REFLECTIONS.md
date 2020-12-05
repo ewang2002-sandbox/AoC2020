@@ -103,3 +103,69 @@ But I did learn several things from today's question.
 | ------------- | ------------- | 
 | A | ~72 Minutes. | 
 | B | ~54 Minutes. | 
+
+### [Day 05](https://adventofcode.com/2020/day/5)
+The question wasn't too bad for me... after I understood what it was asking. I spent a good deal of time trying to understand what both parts were asking for. 
+
+Bear in mind that I'm not too sure how binary works because I haven't really learned much about it and haven't found the need to use it. I'm sure I'll be learning more about binary later on in my college class; if not, then I'll learn more about it on my own. :) 
+
+For part (A), I tried to find a formula that replicated how AoC did the examples. Almost immediately, I noticed that the new values were divided by taking the mean of the range (that is, (Max - Min) / 2) and then was either added to the minimum value or subtracted from the maximum value. 
+
+What threw me off the most was the fact that the upper value was 127, not 128. When I tried to replicate their example, I would always be one off because they either rounded up or down. I didn't really understand how they got that. However, after thinking about it, I realized that the Math.Ceiling and Math.Floor methods exist (I admit, I never really had a reason to use them before). After learning about these two methods worked, I was able to make a function that worked with the example input.
+
+Here's my work for the first example, **FBFBBFFRLR** (which I'll call a sequence).
+
+Consider **FBFBBFF**, which represents the row sequence. I started by using the first 6 characters: **FBFBBF**. Note that the variable names I used didn't exactly reflect the nature of the problem, which also confused me and wasted some time. 
+| Char  | Work | Min | Max |
+| ---------  | ---- | ---- | ----- |
+| - | - | 0 | 127 | 
+| F | Max = 127 - (127 - 0) / 2 = 63.5 => 63 (FLOOR) | 0 | 63 |
+| B | Min = 0 + (63 - 0) / 2 = 31.5 => 32 (CEILING) | 32 | 63 |
+| F | Max = 63 - (63 - 32) / 2 = 47.5 => 47 (FLOOR) | 32 | 47 |
+| B | Min = 32 + (47 - 32) / 2 = 39.5 => 40 (CEILING) | 40 | 47 |
+| B | Min = 40 + (47 - 40) / 2 = 43.5 => 44 (CEILING) | 44 | 47 |
+| F | Max = 47 - (47 - 44) / 2 = 45.5 => 45 (FLOOR) | 44 | 45 |
+
+Then I determined whether I should use Min or Max based on the last character: **F**. 
+Row = 44.
+
+The formula here can be generalized like so (for the first six characters in the row sequence).
+```
+if Char == "F":
+	Max = Floor(Max - (Max - Min) / 2)
+else:
+	Min = Floor(Min + (Max - Min) / 2)
+```
+
+And for the last character in the row sequence.
+```
+if Char == "F":
+	// "The final F keeps the lower of the two" 
+	Row = Min
+else:
+	Row = Max 
+```
+
+Consider **RLR**, the column sequence. The same idea generalization shown above can be applied to this part.  
+| Char  | Work | Min | Max |
+| ---------  | ---- | ---- | ----- |
+| - | - | 0 | 7 | 
+| R | Min = 0 + (7 - 0) / 2 = 3.5 => 4 (FLOOR) | 4 | 7 |
+| L | Max = 7 - (7 - 4) / 2 = 5.5 => 5 (CEILING) | 4 | 5 |
+
+The last character in the column sequence is **R**. Thus, we're using the Max value because "The final R keeps the upper of the two."
+
+From there, the implementation wasn't hard at all.
+
+Part (B) was definitely easier than part (A). However, the wording caught me off-guard. In particular, this caught me off-guard:
+> Your seat wasn't at the very front or back, though; the seats with IDs +1 and -1 from yours will be in your list.
+What does "+1" and "-1" mean? All I knew was that the ID couldn't be the minimum or the maximum ID found from part (A). I ended up looking on the AoC subreddit to see if anyone else had trouble -- and, indeed, [someone else did](https://www.reddit.com/r/adventofcode/comments/k727v4/2020_day_5_part_2_im_not_sure_what_this_one_is/).
+
+After getting some clarification, the implementation for this part was extremely easy. First, sort the IDs from smallest to greatest. Then, iterate through each ID and check if the difference between this ID and the previous ID is two (because |+1 - (-1)| = 2). 
+
+Overall though, I feel like the thing that got me in today's question was my lack of knowledge of Ceiling and Floor and the fact that I was overthinking the problem a lot (overthinking is something that I'm quite good at). 
+
+| Part  | Time Taken |
+| ------------- | ------------- | 
+| A | ~55 Minutes. | 
+| B | ~5 Minutes. | 

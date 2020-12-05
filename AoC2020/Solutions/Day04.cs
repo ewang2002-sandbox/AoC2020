@@ -16,7 +16,6 @@ namespace AoC2020.Solutions
 				.Split(Environment.NewLine + Environment.NewLine)
 				.ToList();
 
-		// 254
 		public override string SolvePart1()
 		{
 			var valid = 0;
@@ -79,11 +78,9 @@ namespace AoC2020.Solutions
 			}
 
 			static bool CheckHcl(string input)
-			{
-				if (input.Length != 7) return false;
-				if (input[0] != '#') return false;
-				return input[1..].Count(x => 'a' <= x && x <= 'f' || char.IsNumber(x)) == 6;
-			}
+				=> input.Length != 7
+			       && input[0] == '#'
+			       && input[1..].Count(x => 'a' <= x && x <= 'f' || char.IsNumber(x)) == 6;
 
 			static bool CheckEcl(string input)
 			{

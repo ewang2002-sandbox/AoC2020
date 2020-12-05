@@ -33,8 +33,8 @@ namespace AoC2020
 			sw.Stop();
 			var timeTakenSol2 = sw.Elapsed;
 
-			Console.WriteLine($"Day 1 Solution: {sol1}\n\tTime Taken: {timeTakenSol1.Milliseconds} MS.");
-			Console.WriteLine($"Day 2 Solution: {sol2}\n\tTime Taken: {timeTakenSol2.Milliseconds} MS.");
+			Console.WriteLine($"Part 1 Solution: {sol1}\n\tTime Taken: {timeTakenSol1.Milliseconds} MS.");
+			Console.WriteLine($"Part 2 Solution: {sol2}\n\tTime Taken: {timeTakenSol2.Milliseconds} MS.");
 		}
 	}
 }
