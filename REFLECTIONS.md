@@ -159,6 +159,7 @@ From there, the implementation wasn't hard at all.
 
 Part (B) was definitely easier than part (A). However, the wording caught me off-guard. In particular, this caught me off-guard:
 > Your seat wasn't at the very front or back, though; the seats with IDs +1 and -1 from yours will be in your list.
+
 What does "+1" and "-1" mean? All I knew was that the ID couldn't be the minimum or the maximum ID found from part (A). I ended up looking on the AoC subreddit to see if anyone else had trouble -- and, indeed, [someone else did](https://www.reddit.com/r/adventofcode/comments/k727v4/2020_day_5_part_2_im_not_sure_what_this_one_is/).
 
 After getting some clarification, the implementation for this part was extremely easy. First, sort the IDs from smallest to greatest. Then, iterate through each ID and check if the difference between this ID and the previous ID is two (because |+1 - (-1)| = 2). 
