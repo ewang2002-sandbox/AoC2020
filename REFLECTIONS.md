@@ -170,3 +170,74 @@ Overall though, I feel like the thing that got me in today's question was my lac
 | ------------- | ------------- | 
 | A | ~55 Minutes. | 
 | B | ~5 Minutes. | 
+
+### [Day 06](https://adventofcode.com/2020/day/6)
+This problem was way easier than yesterday's problem. However, I did end up spending more time than what was needed. In the process, though, I learned a few new things.
+
+Part (A) was simple. Given the example input below:
+```
+abc
+
+a
+b
+c
+
+ab
+ac
+
+a
+a
+a
+a
+
+b
+```
+
+You would split the content of the input file by two newlines so each element in the generated array represents a group's custom declaration form. 
+```
+{ "abc", "a\nb\nc", "ab\nac", ... }
+```
+
+Then, you would split each group's custom declaration form (a string) by a newline, join the split array to produce one line with the responses, and then split the string into an array of characters. I'll use the third element in the array above to showcase this.
+```
+"ab\nac" => { "ab", "ac" } => "abac" => { 'a', 'b', 'a', 'c' }
+```
+
+From there, I can just find all the distinct elements and add them up. 
+```
+{ 'a', 'b', 'c' }
+```
+
+So, what went wrong? 
+- I forgot that, in Windows, you had to split each line by "\r\n." At first, I used "\n" and that caused a lot of errors. After 20 minutes of suffering, I realized that I should have used "\r\n" (C# has a NewLine property that I could use, so I used that).
+	- I actually had a similar issue in an early AoC question; however, I never really thought much about the issue. 
+- In C#, splitting a string by "" does not give you a character array; it gives you an array with one element -- the one element being the string. If you want a character array from a string, use Array#ToCharArray. It took me a while to realize this. 
+
+Part (B) required the use of a dictionary which would exist in the outer loop's scope (where I'm iterating through each form). Basically, for each question, I did the same thing as part (A). The only difference was after I got all distinct elements of the character array, I put the amount of times the character existed in a dictionary. Then, I repeated this for each line in the form. 
+
+For example, consider the form `ab\nac`. Splitting by a new line would yield:
+```
+ab\nac => { "ab", "ac" }
+```
+
+The dictionary would contain the following key/value pairs (key is the character, value is the amount of times that character occurred in each element):
+```
+{ 'a' => 2 } // 'a' exists in both elements
+{ 'b' => 1 } // 'b' exists in the first element
+{ 'c' => 1 } // 'c' exists in the second element
+```
+
+From there, I can check whether the amount of time each character existed was equal to the length of the array. If they're equal, then everyone answered "yes" to that question. In the example, the length of the array is 2. 'a' is the only character that has 2 occurrances, so 'a' is the only question that everyone in the group answered "yes" to. The rest is self-explanatory. 
+
+So, what did I learn? 
+- Unless you know what the string contains and you can literally see the new line sequence used, always consider the environment when splitting by a new line.
+	- For example, if the string given is "abc\ndef," then you can split by "\n" since it's explicitly there. 
+	- Otherwise, you must decide whether to use "\n" or "\r\n" (or just use Environment.NewLine).
+- If you need to get a character array from a string, use Array#ToCharArray. Don't split by "" -- it doesn't work. 
+
+Overall though, this was an easy question. I hope I see more of this.
+
+| Part  | Time Taken |
+| ------------- | ------------- | 
+| A | ~22 Minutes. | 
+| B | ~4 Minutes. | 
