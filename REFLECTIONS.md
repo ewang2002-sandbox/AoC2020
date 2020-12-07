@@ -241,3 +241,65 @@ Overall though, this was an easy question. I hope I see more of this.
 | ------------- | ------------- | 
 | A | ~22 Minutes. | 
 | B | ~4 Minutes. | 
+
+### [Day 07](https://adventofcode.com/2020/day/7)
+This problem was, in my opinion, significantly harder than the previous problem. It took me multiple hours to figure out how to approach both problems; however, it was satisfying getting the right answers. 
+
+Part (A) involved several steps. First, I had to parse each bag. In this case, I made use of a dictionary; the key would be the string before the word **contain**; the value would be the string after the word **contain**, represented as an array (split by ", "). If the value contains "no other bags," then this will be an empty array. For both the key and value, I changed "bags" to "bag," and then removed the period at the end. For example, consider these three inputs.
+
+```
+dark maroon bags contain 2 striped silver bags, 4 mirrored maroon bags, 5 shiny gold bags, 1 dotted gold bag.
+{ "dark maroon bag" => { "striped silver bag", "mirrored maroon bag", "shiny gold bag", "dotted gold bag" }}
+```
+
+```
+dark coral bags contain 4 pale blue bags, 3 wavy yellow bags, 4 vibrant tan bags, 3 striped purple bags.
+{ "dark coral bag" => {"pale blue bag", "wavy yellow bag", "vibrant tan bag", "striped purple bag" }}
+```
+
+```
+wavy yellow bags contain no other bags.
+{ "wavy yellow bags" => {}}
+```
+
+Then, I created a new HashSet that contains all the bags I checked to see which bag contained the "shiny gold bag" and declared a variable that held the old length of the HashSet. 
+
+Now, this is where the hard part is. The question states that we have to find "how many colors can, eventually, contain at least one shiny gold bag?" Basically, we need to find a bag that will contain another bag that will eventually contain the gold bag. 
+
+Consider this example:
+```
+B1 -> B2 -> Gold Bag
+B3 -> B2
+B4 -> B1
+```
+
+Which will lead to: 
+```
+B1 -> B2 -> Gold Bag
+B4	  B3
+```
+
+Which means the following bags will eventually link to the Gold Bag:
+```
+B1, B2, B3, B4 => Gold Bag
+```
+
+Although it took a while, the way I approached the problem is this:
+- Start an infinite loop.
+- Go through each bag and its elements (i.e. go through each key/value pair in the dictionary).
+- Go through each defined element.
+- If the defined element is in the HashSet.
+	- Add the defined element to the HashSet.
+		- This means the defined element, the bag, will contain a bag that will contain the gold bag.
+- Otherwise, continue to the next bag. 
+- After each bag is checked, check if the old length is equal to the length of the HashSet.
+	- If it is, then don't break out of the loop.
+		- This means that we need to check each element again in case there are more bags that will eventually have the gold bag.
+
+So, that's that. It was hard for me to grasp, but at least I got the answer. 
+
+Part (B) took about the same time because I tried to approach the problem recursively. Although that is supposedly the ideal way to do the question, I rarely use recursion in my programs so I had a hard time grasping the problem. 
+
+First, I had to parse the file again. This is because I had to use the numbers (in the previous part, I removed the numbers). After I parsed the input, I tried to figure out a pattern that I could use to evaluate the problem. 
+
+I forgot exactly what I did, but it involved quite a bit of guesswork. When I have time, I'll explain more. 
