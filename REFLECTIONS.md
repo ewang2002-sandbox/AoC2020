@@ -1,6 +1,12 @@
 # Reflections
 Here, I'll reflect on the problem that I did. I'll provide my thought process, along with some basic stats. 
 
+I should mention that I have not taken any programming courses aside from:
+- AP Computer Science A.
+- An introductory computer science college course (basically APCSA).
+
+In other words, programming is something that, for the most part, I learned on my own. 
+
 ### [Day 1](https://adventofcode.com/2020/day/1)
 Part A and B were basically making use of two and three for-loops, respectively. However, I could definitely improve on its efficiency (Part A's time complexity is O(n^2) and Part B's time complexity is O(n^3)). 
 
@@ -303,3 +309,22 @@ Part (B) took about the same time because I tried to approach the problem recurs
 First, I had to parse the file again. This is because I had to use the numbers (in the previous part, I removed the numbers). After I parsed the input, I tried to figure out a pattern that I could use to evaluate the problem. 
 
 I forgot exactly what I did, but it involved quite a bit of guesswork. When I have time, I'll explain more. 
+
+| Part  | Time Taken |
+| ------------- | ------------- | 
+| A | ~60 Minutes. | 
+| B | ~60 Minutes. | 
+
+### [Day 08](https://adventofcode.com/2020/day/8)
+This question was certainly refreshing, considering yesterday's disaster. I was, at first, a bit apprehensive when I saw the question since this question looked very familiar to last year's IntCode questions (which is also why I basically stopped). However, it wasn't too bad.
+
+For part (A), I made use of a HashSet to determine the indices that I visited. Then, I worked through the problem like usual -- not much to it. If the index that I visited is already in the HashSet, exit the loop and return the accumulator value.
+
+For part (B), I tried to find the best way to approach the problem but ended up bruteforcing it. The idea is simple: I would have two nested while loops. The first while loop, which contains a for-loop, would clone the array (not clone, but literally parse the input array again) and change one command to the other command ("jmp" to "nop" or vice versa). After I changed one command, I would enter the second while loop, which was basically me copying and pasting the code from part (A). If I was able to make it through all the instructions without encountering an index that I already visited, then return the accumulator value; otherwise, restart the loop. 
+
+So, what took me so long? Essentially, the index variable that I used to keep track of which directions I performed never changed -- it was always 0. The reason was because the original instructions array's values were being changed due to the way references worked. I, however, thought a simple clone would work when, in reality, that would not work. So much for that.
+
+| Part  | Time Taken |
+| ------------- | ------------- | 
+| A | ~10 Minutes. | 
+| B | ~23 Minutes. | 

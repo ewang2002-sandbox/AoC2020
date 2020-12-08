@@ -10,9 +10,9 @@ namespace AoC2020
 		public static async Task Main()
 		{
 			var input = await File
-				.ReadAllTextAsync(Path.Join("Inputs", "07.txt"));
+				.ReadAllTextAsync(Path.Join("Inputs", "08.txt"));
 
-			new Day07(input).Solve();
+			new Day08(input).Solve();
 			Console.ReadLine();
 		}
 	}
