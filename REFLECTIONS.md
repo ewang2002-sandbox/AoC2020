@@ -316,15 +316,30 @@ I forgot exactly what I did, but it involved quite a bit of guesswork. When I ha
 | B | ~60 Minutes. | 
 
 ### [Day 08](https://adventofcode.com/2020/day/8)
-This question was certainly refreshing, considering yesterday's disaster. I was, at first, a bit apprehensive when I saw the question since this question looked very familiar to last year's IntCode questions (which is also why I basically stopped). However, it wasn't too bad.
+This question was certainly refreshing, considering yesterday's disaster. I was, at first, a bit apprehensive when I saw the question since this question looked very familiar to last year's IntCode questions (which is also why I stopped). However, it wasn't too bad.
 
 For part (A), I made use of a HashSet to determine the indices that I visited. Then, I worked through the problem like usual -- not much to it. If the index that I visited is already in the HashSet, exit the loop and return the accumulator value.
 
-For part (B), I tried to find the best way to approach the problem but ended up bruteforcing it. The idea is simple: I would have two nested while loops. The first while loop, which contains a for-loop, would clone the array (not clone, but literally parse the input array again) and change one command to the other command ("jmp" to "nop" or vice versa). After I changed one command, I would enter the second while loop, which was basically me copying and pasting the code from part (A). If I was able to make it through all the instructions without encountering an index that I already visited, then return the accumulator value; otherwise, restart the loop. 
+For part (B), I tried to find the best way to approach the problem but ended up brute-forcing it. The idea is simple: I would have two nested while loops. The first while loop, which contains a for-loop, would clone the array (not a clone, but parse the input array again) and change one command to the other command ("jmp" to "nop" or vice versa). After I changed one command, I would enter the second while loop, which was me copying and pasting the code from part (A). If I was able to make it through all the instructions without encountering an index that I already visited, then return the accumulator value; otherwise, restart the loop. 
 
-So, what took me so long? Essentially, the index variable that I used to keep track of which directions I performed never changed -- it was always 0. The reason was because the original instructions array's values were being changed due to the way references worked. I, however, thought a simple clone would work when, in reality, that would not work. So much for that.
+So, what took me so long? Essentially, the index variable that I used to keep track of which directions I performed never changed -- it was always 0. The reason was that the original instructions array's values were being changed due to the way references worked. I, however, thought a simple clone would work when, in reality, that would not work. So much for that.
 
 | Part  | Time Taken |
 | ------------- | ------------- | 
 | A | ~10 Minutes. | 
 | B | ~23 Minutes. | 
+
+### [Day 09](https://adventofcode.com/2020/day/9)
+A little harder than yesterday's question, but certainly not too bad. I did end up taking a bit too much time than was necessary, though. 
+
+Part (A) asked us to find a number where the 25 numbers before the specified number cannot add up to the said number. I simulated this by defining a variable that would record the last index checked. Then, I used an infinite loop to brute force to solve this problem. First, I got the elements from the input array ranging from the defined variable (inclusive) to the defined variable + 25 (exclusive; in other words, I got a subset of the input array). I also got the number located in the (defined variable + 25) index. Then, I made a nested for-loop that checked for any possible combinations of two numbers. If there are two distinct numbers in the subset that equal the specified number. If two numbers equal the specified number, then the specified number is invalid. In that case, we increment the index by 1 and try the next subset & number. If there are no two other numbers, then we return it. 
+
+The part that I screwed upon is that I put the incrementer line *before* getting the target number. In that case, what happened was that I was getting a subset of the input array; however, the target number was not directly after the last element of the array but, rather, one additional element after the array (so two indices). The example input worked, but it did not work for the actual input.
+
+Part (B) asked us to use our answer from part (A) to find a subset of the input array such that the sum of the values of the subset is equal to the answer from part (A). This was easily done by defining a variable that kept track of how many elements could be in our subset. Then, in an infinite loop, I checked to see if the sum of the values of the subset is equal to the answer. If it is, then sort the array and take the first and last values of the array (the minimum and maximum) and return the sum of those two values. Otherwise, we increment the number of elements allowed in our subset and check through again. 
+
+
+| Part  | Time Taken |
+| ------------- | ------------- | 
+| A | ~34 Minutes. | 
+| B | ~11 Minutes. | 
