@@ -343,3 +343,29 @@ Part (B) asked us to use our answer from part (A) to find a subset of the input 
 | ------------- | ------------- | 
 | A | ~34 Minutes. | 
 | B | ~11 Minutes. | 
+
+### [Day 10](https://adventofcode.com/2020/day/10)
+Ah, the joys of yet another recursion question. Today's question was the first question (so far) that required me to sleep on it (that is, sleep and think about it when I'm not tired). 
+
+Part (A) is simple, though I ended up overthinking it at first. Essentially, when I first saw this problem, I immediately assumed that we had to look for the device's rating. However, that was not the case -- and that cost me a bit of time. Next, I didn't carefully look at the input, so I automatically assumed that there was a possibility that an element exists such that one of the next three elements cannot have a difference that is less than or equal to 3 (e.g. [5], 9, 10, 11). While my solution worked, it was far too convoluted and I chose to scrap the solution.
+
+The thing that should be noticed is that, for each value, the difference between that value and the previous value will always be 1 or 3. I noticed this by simply drawing out all the input values (sorted). Thus, a simple for-loop will suffice. Despite the part talking about jolts, the part ended up asking us to find the number of times the difference between the current value and the previous value was either 1 or 3. 
+
+Part (B) took a long time. Recursion is not my favorite type of problem, so this question didn't make me happy. I ended up sleeping first before finishing the part. 
+
+I started by drawing out the inputs like usual and created "branches" where necessary. The idea is that I implemented a recursive function that evaluates the number of possible combinations within a "branch." When I encounter a "branch" (caused when there are at least two elements after a specified element that has a difference of 3 or less), I call the function again. 
+
+When running my function, I got some high numbers for some example inputs -- I immediately tried to figure out what the cause was and noticed that the way I was incrementing the possible combinations was incorrect. After fixing a few minor bugs, I got a solution that didn't do what I wanted it to do. The function ended up determining the number of possible general combinations (in other words, the number of branches created) -- AoC wanted the number of possible end combinations (in other words, the number of branches that led up to the maximum value).
+
+With that in mind, I made a few changes. Mainly, I checked to see if the rating was equal to the maximum value in the array; if so, then return 1 (meaning one end branch). Otherwise, return the number of end branches from that main branch. This is the only part that I can't explain (though, when I have time and motivation, I will look into it). 
+
+Now, this implementation worked with the test inputs. However, it took far more than *3 hours* for it to return a value for the actual input (in actuality, I ended up terminating the problem). What went wrong? Well, it turns out the program was making a bunch of repetitive computations (like it already calculated the number of end branches; however, it's doing it again). So I ended up creating a dictionary that "cached" the values (this is, I believe, known as *memorization*). 
+
+At first, it didn't work as intended. It was still going to take hours to solve the input. So, what went wrong this time? It turns out I was only caching the maximum value of the array (key = maximum value, value = 1). After making a few adjustments (evaluating the function recursively, caching the result, and then incrementing the number of combinations), the program worked! 
+
+Honestly, I never liked recursion; however, recursion has its use & I do want to learn more about how it works. Also, for the sake of archiving it, I put my original implementation (commented out) of part two (the one that got the number of possible branches) since it was an interesting solution. 
+
+| Part  | Time Taken |
+| ------------- | ------------- | 
+| A | ~45 Minutes. | 
+| B | 120+ Minutes. | 
