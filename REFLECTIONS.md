@@ -369,3 +369,21 @@ Honestly, I never liked recursion; however, recursion has its use & I do want to
 | ------------- | ------------- | 
 | A | ~45 Minutes. | 
 | B | 120+ Minutes. | 
+
+### [Day 11](https://adventofcode.com/2020/day/11)
+This was a really annoying question that, frankly, got me pretty hard. Because I'm quite tired, I won't go too in-depth on my thought process. I'll mainly point out my mistakes. I might also need to optimize my code... 
+
+Part (A) got me due to several reasons. 
+- I didn't notice that the rules would be applied to each seat __simultaneously__. I originally thought that each seat would be occupied one at a time...
+- When the second rule said "four or more seats adjacent to it," I thought "four or more seats in a line." 
+- I had to deep clone the array due to references being copied.
+
+Part (B) got me due to one reason.
+- I forgot that `&&` has a higher precedence than `||`. Thus, the expression, `a || b && c` was actually being evaluated like `a || (b && c)` instead of what I wanted, `(a || b) && c`. This one cost me the most time because I didn't think this would be the reason why my solution would lead to an infinite loop.
+
+Other than those issues, the problem was annoying. I definitely preferred yesterday's problems.
+
+| Part  | Time Taken |
+| ------------- | ------------- | 
+| A | ~75 Minutes. | 
+| B | ~45 Minutes. | 

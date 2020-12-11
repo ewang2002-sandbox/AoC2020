@@ -5,7 +5,7 @@ using System.Linq;
 namespace AoC2020.Solutions
 {
 	/// <summary>
-	/// https://adventofcode.com/2020/day/9
+	/// https://adventofcode.com/2020/day/10
 	/// </summary>
 	public class Day10 : BaseDay
 	{
