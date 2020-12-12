@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace AoC2020.Solutions
 {
 	/// <summary>
-	/// https://adventofcode.com/2020/day/10
+	/// https://adventofcode.com/2020/day/11
 	/// </summary>
 	public class Day11 : BaseDay
 	{

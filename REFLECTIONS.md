@@ -387,3 +387,17 @@ Other than those issues, the problem was annoying. I definitely preferred yester
 | ------------- | ------------- | 
 | A | ~75 Minutes. | 
 | B | ~45 Minutes. | 
+
+### [Day 12](https://adventofcode.com/2020/day/12)
+Pretty easy question. I ended up using the wrong primitive data type though...
+
+Part (A) was really easy. However, instead of using an integer to determine what the angle was, I used a `char` to store the current direction. This, in turn, led to quite a lot of headaches as I tried to figure out how to index an array using the index operator; specifically, how I could index an array if the index is negative (I ended up overthinking this part).
+
+Part (B) was also really easy. To be honest, I'm not sure how long I took but I'm fairly certain I took less than 30 minutes. A lot of the time spent was me drawing out how the waypoint could look when it changes directions and then applying that to the actual question.
+
+For both questions, I ended up taking a small break since I had other things to attend to. I'll update this later.
+
+| Part  | Time Taken |
+| ------------- | ------------- | 
+| A | ~80 Minutes. | 
+| B | ~30 Minutes. | 
