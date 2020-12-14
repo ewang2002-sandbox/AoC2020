@@ -3,7 +3,6 @@ My solutions to the [2020 Advent of Code](https://adventofcode.com/2020) questio
 
 ## Language of Choice
 - C# (.NET Core 3.1)
-- Python 3.8 (Not Shown Here)
 
 ## Layout 
 For each question, I will do the following. 
@@ -17,6 +16,3 @@ These solutions can be found in the `AoC2020/Solutions` directory.
 After I successfully submit a question, I will go back to my original solution and see what I could do to make it "better." 
 
 In the case that I need to revise my code, I will put the revised solution in the `AoC2020/Revised` directory. 
-
-#### Stage 3
-I'll reflect on my performance and thought process in the [REFLECTIONS.md](https://github.com/ewang2002/AoC2020/blob/master/REFLECTIONS.md) file.

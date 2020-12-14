@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace AoC2020.Solutions
@@ -88,6 +89,7 @@ namespace AoC2020.Solutions
 			currDirection = _angleOrder[index < 0 ? ^Math.Abs(index) : index];
 		}
 
+		[SuppressMessage("Microsoft.Style", "IDE0042")]
 		public override string SolvePart2()
 		{
 			(int x, int y) ship = (0, 0);

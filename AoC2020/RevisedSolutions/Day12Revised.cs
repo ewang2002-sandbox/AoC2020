@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace AoC2020.RevisedSolutions
@@ -69,6 +70,7 @@ namespace AoC2020.RevisedSolutions
 			currAngle = (currAngle + angle) % 360;
 		}
 
+		[SuppressMessage("Microsoft.Style", "IDE0042")]
 		public override string SolvePart2()
 		{
 			(int x, int y) ship = (0, 0);
