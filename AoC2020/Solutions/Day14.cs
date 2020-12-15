@@ -135,6 +135,7 @@ namespace AoC2020.Solutions
 			return sum.ToString();
 		}
 
+		// implementation from stack overflow
 		private IList<char[]> GetBinaryCombination(int length)
 		{
 			var l = new List<char[]>();
