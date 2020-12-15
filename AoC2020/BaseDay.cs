@@ -26,15 +26,14 @@ namespace AoC2020
 			sw.Start();
 			var sol1 = SolvePart1();
 			sw.Stop();
-			var timeTakenSol1 = sw.Elapsed;
+			var timeTakenSol1 = sw.ElapsedMilliseconds;
+			Console.WriteLine($"Part 1 Solution: {sol1}\n\tTime Taken: {timeTakenSol1} MS.");
 
 			sw.Restart();
 			var sol2 = SolvePart2();
 			sw.Stop();
-			var timeTakenSol2 = sw.Elapsed;
-
-			Console.WriteLine($"Part 1 Solution: {sol1}\n\tTime Taken: {timeTakenSol1.Milliseconds} MS.");
-			Console.WriteLine($"Part 2 Solution: {sol2}\n\tTime Taken: {timeTakenSol2.Milliseconds} MS.");
+			var timeTakenSol2 = sw.ElapsedMilliseconds;
+			Console.WriteLine($"Part 2 Solution: {sol2}\n\tTime Taken: {timeTakenSol2} MS.");
 		}
 	}
 }

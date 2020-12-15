@@ -24,6 +24,40 @@ namespace AoC2020.Solutions
 
 		public int GetSpokenNumber(int at)
 		{
+			var numsSaid = new Dictionary<int, (int f, int l)>();
+			// index = turns + 1
+			var i = 0;
+			for (; i < _input.Length; i++)
+				numsSaid.Add(_input[i], (f: -1, l: i));
+
+			var lastNum = _input.Last();
+			for (; i < at; i++)
+			{
+				if (numsSaid.ContainsKey(lastNum) && numsSaid[lastNum].f != -1)
+				{
+					var newNum = i - 1 - numsSaid[lastNum].f;
+					lastNum = newNum;
+					if (numsSaid.ContainsKey(newNum))
+						numsSaid[newNum] = (f: numsSaid[newNum].l, l: i);
+					else
+						numsSaid.Add(newNum, (f: -1, l: i));
+
+					continue;
+				}
+
+				lastNum = 0;
+				if (numsSaid.ContainsKey(0))
+					numsSaid[0] = (f: numsSaid[0].l, l: i);
+				else
+					numsSaid.Add(0, (f: -1, l: i));
+			}
+
+			return lastNum;
+		}
+
+		/*
+		public int GetSpokenNumber(int at)
+		{
 			var numsSaid = new Dictionary<int, IList<int>>();
 			// index = turns + 1
 			var i = 0;
@@ -56,7 +90,7 @@ namespace AoC2020.Solutions
 			}
 
 			return lastNum;
-		}
+		}*/
 
 		/*
 		public override string SolvePart1()

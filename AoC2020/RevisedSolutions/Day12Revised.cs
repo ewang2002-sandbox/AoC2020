@@ -63,7 +63,7 @@ namespace AoC2020.RevisedSolutions
 			return (Math.Abs(x) + Math.Abs(y)).ToString();
 		}
 
-		public void ChangeDirection(ref int currAngle, int angle)
+		public static void ChangeDirection(ref int currAngle, int angle)
 		{
 			angle %= 360;
 			if (angle < 0) angle = 360 - Math.Abs(angle);
@@ -108,7 +108,7 @@ namespace AoC2020.RevisedSolutions
 			return (Math.Abs(ship.x) + Math.Abs(ship.y)).ToString();
 		}
 
-		public void ChangeWaypointDirection(ref (int x, int y) waypoint, int dir)
+		public static void ChangeWaypointDirection(ref (int x, int y) waypoint, int dir)
 		{
 			dir %= 360;
 			if (dir < 0)

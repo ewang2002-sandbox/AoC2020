@@ -146,7 +146,7 @@ namespace AoC2020.Solutions
 			return (Math.Abs(ship.x) + Math.Abs(ship.y)).ToString();
 		}
 
-		public void ChangeWaypointDir(ref (int x, int y) waypoint, int angle, int dir)
+		public static void ChangeWaypointDir(ref (int x, int y) waypoint, int angle, int dir)
 		{
 			angle = Math.Abs(angle) % 360 / 90;
 			if (dir == -1)

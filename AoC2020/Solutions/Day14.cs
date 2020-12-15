@@ -136,7 +136,7 @@ namespace AoC2020.Solutions
 		}
 
 		// implementation from stack overflow
-		private IList<char[]> GetBinaryCombination(int length)
+		private static IList<char[]> GetBinaryCombination(int length)
 		{
 			var l = new List<char[]>();
 			for (var i = 0L; i < 1 << length; i++)
@@ -147,7 +147,7 @@ namespace AoC2020.Solutions
 			return l;
 		}
 
-		private string GetBinary(long n, int l)
+		private static string GetBinary(long n, int l)
 		{
 			var bit = (long) (1 << l - 1);
 			var str = new StringBuilder();

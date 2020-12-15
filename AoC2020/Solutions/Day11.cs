@@ -98,7 +98,7 @@ namespace AoC2020.Solutions
 				.ToString();
 		}
 
-		public bool CanEmpty(IList<char[]> arr, int i, int j, bool checkAdj, int tol)
+		private static bool CanEmpty(IList<char[]> arr, int i, int j, bool checkAdj, int tol)
 		{
 			if (arr[i][j] == Floor || arr[i][j] == EmptySeat)
 				return false;
@@ -108,7 +108,7 @@ namespace AoC2020.Solutions
 				: GetFirstElementInEachDir(arr, i, j).Count(x => x == OccupiedSeat) >= tol;
 		}
 
-		public bool CanOccupy(IList<char[]> arr, int i, int j, bool checkAdj)
+		private static bool CanOccupy(IList<char[]> arr, int i, int j, bool checkAdj)
 		{
 			if (arr[i][j] == OccupiedSeat || arr[i][j] == Floor)
 				return false;
@@ -118,7 +118,7 @@ namespace AoC2020.Solutions
 				: GetFirstElementInEachDir(arr, i, j).All(x => x != OccupiedSeat);
 		}
 
-		private static IList<char> GetFirstElementInEachDir(IList<char[]> arr, int i, int j)
+		private static IEnumerable<char> GetFirstElementInEachDir(IList<char[]> arr, int i, int j)
 		{
 			var result = new List<char>();
 
@@ -217,7 +217,7 @@ namespace AoC2020.Solutions
 			return result;
 		}
 
-		private static IList<char> GetAdjacentElements(IList<char[]> arr, int i, int j)
+		private static IEnumerable<char> GetAdjacentElements(IList<char[]> arr, int i, int j)
 		{
 			var adjacentDiff = new (int x, int y)[]
 			{
@@ -248,7 +248,7 @@ namespace AoC2020.Solutions
 			return res;
 		}
 
-		private IList<char[]> DeepClone(IList<char[]> arr)
+		private static IList<char[]> DeepClone(IList<char[]> arr)
 		{
 			var newArr = new List<char[]>();
 			for (var i = 0; i < arr.Count; i++)
