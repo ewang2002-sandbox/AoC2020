@@ -43,6 +43,7 @@ namespace AoC2020.Solutions
 			return (dict.First().Key * (dict.First().Value - targetTime)).ToString();
 		}
 
+		// wtf is this
 		public override string SolvePart2()
 		{
 			var possibleBuses = _input[1].Split(',');

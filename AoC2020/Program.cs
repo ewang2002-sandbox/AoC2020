@@ -15,12 +15,12 @@ namespace AoC2020
 		public static async Task Main()
 		{
 			var input = await File
-				.ReadAllTextAsync(Path.Join("Inputs", "13.txt"));
+				.ReadAllTextAsync(Path.Join("Inputs", "14.txt"));
 
 #if GENERAL
-			new Day13(input).Solve();
+			new Day14(input).Solve();
 #else
-			new Day13Revised(input).Solve();
+			new Day14Revised(input).Solve();
 #endif
 			Console.ReadLine();
 		}
