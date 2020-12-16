@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AoC2020.Solutions
@@ -22,6 +23,34 @@ namespace AoC2020.Solutions
 		public override string SolvePart2()
 			=> GetSpokenNumber(at: 30000000).ToString();
 
+		public int GetSpokenNumber(int at)
+		{
+			var numsSaid = new int[at];
+			Array.Fill(numsSaid, -1);
+			var i = 0;
+			for (; i < _input.Length - 1; i++)
+				numsSaid[_input[i]] = i;
+
+			var lastNum = _input[^1];
+			for (; i < at - 1; i++)
+			{
+				// last number spoken once only
+				if (numsSaid[lastNum] == -1)
+				{
+					numsSaid[lastNum] = i;
+					lastNum = 0;
+					continue;
+				}
+
+				var idx = numsSaid[lastNum];
+				numsSaid[lastNum] = i;
+				lastNum = i - idx;
+			}
+
+			return lastNum;
+		}
+
+		/*
 		public int GetSpokenNumber(int at)
 		{
 			var numsSaid = new Dictionary<int, (int f, int l)>();
@@ -53,7 +82,7 @@ namespace AoC2020.Solutions
 			}
 
 			return lastNum;
-		}
+		}*/
 
 		/*
 		public int GetSpokenNumber(int at)
