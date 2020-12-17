@@ -1,4 +1,5 @@
 ﻿#define GENERAL
+#undef GENERAL
 using System;
 using System.IO;
 #if !GENERAL

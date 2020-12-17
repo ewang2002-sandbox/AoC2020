@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 
 namespace AoC2020.Solutions
 {
@@ -29,11 +28,11 @@ namespace AoC2020.Solutions
 			var cube = new bool[_input.Length + 25, _input.Length + 25, _input.Length + 25];
 			var mid = cube.GetLength(0) / 2 - _input[0].Length / 2;
 			for (var i = 0; i < _input.Length; i++)
-				for (var j = 0; j < _input[i].Length; j++)
-				{
-					cube[i + mid, j + mid, mid] = _input[i][j] == '#';
-					activeCubes += _input[i][j] == '#' ? 1 : 0;
-				}
+			for (var j = 0; j < _input[i].Length; j++)
+			{
+				cube[i + mid, j + mid, mid] = _input[i][j] == '#';
+				activeCubes += _input[i][j] == '#' ? 1 : 0;
+			}
 
 			var cyclesCompleted = 0;
 			while (cyclesCompleted < 6)
@@ -41,26 +40,26 @@ namespace AoC2020.Solutions
 				Debug.Assert(cube != null, nameof(cube) + " != null");
 				var cloneCube = cube.Clone() as bool[,,];
 				for (var i = 0; i < cube.GetLength(0); i++)
-					for (var j = 0; j < cube.GetLength(1); j++)
-						for (var k = 0; k < cube.GetLength(2); k++)
-						{
-							var neighborsAtPt = GetNeighbors(cube, i, j, k);
-							// -1 because we counted this position as well. 
-							var numTrue = neighborsAtPt.Count(x => x);
-							
-							if (cube[i, j, k] && numTrue != 3 && numTrue != 4)
-							{
-								cloneCube![i, j, k] = false;
-								activeCubes--;
-								continue;
-							}
+				for (var j = 0; j < cube.GetLength(1); j++)
+				for (var k = 0; k < cube.GetLength(2); k++)
+				{
+					var neighborsAtPt = GetNeighbors(cube, i, j, k);
+					// -1 because we counted this position as well. 
+					var numTrue = neighborsAtPt.Count(x => x);
 
-							if (!cube[i, j, k] && numTrue == 3)
-							{
-								cloneCube![i, j, k] = true;
-								activeCubes++;
-							}
-						}
+					if (cube[i, j, k] && numTrue != 3 && numTrue != 4)
+					{
+						cloneCube![i, j, k] = false;
+						activeCubes--;
+						continue;
+					}
+
+					if (!cube[i, j, k] && numTrue == 3)
+					{
+						cloneCube![i, j, k] = true;
+						activeCubes++;
+					}
+				}
 
 				cube = cloneCube;
 				cyclesCompleted++;
@@ -126,14 +125,14 @@ namespace AoC2020.Solutions
 			var neighbors = new List<(int x, int y, int z)>();
 
 			for (var a = -1; a <= 1; a++)
-				for (var b = -1; b <= 1; b++)
-					for (var c = -1; c <= 1; c++)
-					{
-						if (a + i >= 0 && a + i < arr.GetLength(0)
-									   && b + j >= 0 && b + j < arr.GetLength(1)
-									   && c + k >= 0 && c + k < arr.GetLength(2))
-							neighbors.Add((a, b, c));
-					}
+			for (var b = -1; b <= 1; b++)
+			for (var c = -1; c <= 1; c++)
+			{
+				if (a + i >= 0 && a + i < arr.GetLength(0)
+				               && b + j >= 0 && b + j < arr.GetLength(1)
+				               && c + k >= 0 && c + k < arr.GetLength(2))
+					neighbors.Add((a, b, c));
+			}
 
 			var neighborsAtCoords = new List<bool>();
 			foreach (var (x, y, z) in neighbors)
