@@ -33,31 +33,25 @@ namespace AoC2020.Solutions
 				var equ = equation.Replace(" ", string.Empty);
 				while (equ.Contains('(') && equ.Contains(')'))
 				{
-					var seenIds = new Dictionary<int, (int s, int e)>();
-					var match = 0;
-					for (var i = 0; i < equ.Length; i++)
+					var s = -1;
+					var e = -1;
+					for (var i = equ.IndexOf('('); i < equ.LastIndexOf(')') + 1; i++)
 					{
 						if (equ[i] == '(')
 						{
-							match++;
-							seenIds.Add(match, (i, -1));
+							s = i;
 							continue;
 						}
 
 						if (equ[i] == ')')
 						{
-							if (seenIds.ContainsKey(match))
-							{
-								seenIds[match] = (seenIds[match].s, i);
-								break;
-							}
-
-							match--;
+							e = i;
+							break;
 						}
 					}
 
-					var res = EvaluateExpression(equ[seenIds[match].s..seenIds[match].e], p1);
-					equ = equ.Replace(equ[seenIds[match].s..(seenIds[match].e + 1)], res.ToString());
+					var res = EvaluateExpression(equ[s..(e + 1)], p1);
+					equ = equ.Replace(equ[s..(e + 1)], res.ToString());
 				}
 
 				sum += EvaluateExpression(equ, p1);
@@ -65,7 +59,7 @@ namespace AoC2020.Solutions
 
 			return sum;
 		}
-		
+
 		private static long EvaluateExpression(string exp, bool p1)
 		{
 			exp = exp.Replace("(", string.Empty)
@@ -95,7 +89,7 @@ namespace AoC2020.Solutions
 					}
 				}
 
-				return sum; 
+				return sum;
 			}
 
 			// for part 2 
@@ -111,7 +105,7 @@ namespace AoC2020.Solutions
 				l.Add(allNumbersInExp.Sum());
 			}
 
-			return l.Aggregate(1L, (current, n) => current * n); 
+			return l.Aggregate(1L, (current, n) => current * n);
 		}
 	}
 }
