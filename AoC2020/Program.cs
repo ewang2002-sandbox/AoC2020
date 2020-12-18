@@ -1,5 +1,4 @@
 ﻿#define GENERAL
-#undef GENERAL
 using System;
 using System.IO;
 #if !GENERAL
@@ -8,10 +7,10 @@ using AoC2020.RevisedSolutions;
 using AoC2020.Solutions;
 #endif
 
-var input = await File.ReadAllTextAsync(Path.Join("Inputs", "17.txt"));
+var input = await File.ReadAllTextAsync(Path.Join("Inputs", "18.txt"));
 #if GENERAL
-new Day17(input).Solve();
+new Day18(input).Solve();
 #else
-new Day17Revised(input).Solve();
+new Day18Revised(input).Solve();
 #endif
 Console.ReadLine();
