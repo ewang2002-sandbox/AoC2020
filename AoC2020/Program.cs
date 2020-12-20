@@ -7,10 +7,10 @@ using AoC2020.RevisedSolutions;
 using AoC2020.Solutions;
 #endif
 
-var input = await File.ReadAllTextAsync(Path.Join("Inputs", "18.txt"));
+var input = await File.ReadAllTextAsync(Path.Join("Inputs", "20.txt"));
 #if GENERAL
-new Day18(input).Solve();
+new Day20(input).Solve();
 #else
-new Day18Revised(input).Solve();
+new Day20Revised(input).Solve();
 #endif
 Console.ReadLine();
