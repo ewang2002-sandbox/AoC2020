@@ -87,12 +87,47 @@ namespace AoC2020.Solutions
 			// Rotate the corner tile so we won't go out of bounds 
 			var firstNeighboringTile = _allTiles.First(x => x.Id == firstCornerTile.MetEdges[0].thatId);
 			var secondNeighboringTile = _allTiles.First(x => x.Id == firstCornerTile.MetEdges[1].thatId);
-			var rotationsCompleted = 0;
-			var horizFlipsCompleted = 0;
-			var vertFlipsCompleted = 0;
+			var q = 0;
+			var r = 0;
+			var s = 0;
+			var allActions = new Action<Tile>[]
+			{
+				tile =>
+				{
+					tile.RotateTile();
+					tile.FlipTile(Tile.FlipAcross.HorizontalLine);
+				},
+				tile =>
+				{
+					tile.RotateTile();
+					tile.FlipTile(Tile.FlipAcross.VerticalLine);
+				},
+				tile => tile.RotateTile()
+			};
+
 			while (true)
 			{
-				// TODO we need to rotate the neighboring tiles as well...
+				if (s >= allActions.Length)
+					s = 0;
+
+				if (r >= allActions.Length)
+				{
+					r = 0;
+					allActions[s](firstCornerTile);
+					s++;
+				}
+
+				if (q >= allActions.Length)
+				{
+					q = 0;
+					allActions[r](secondNeighboringTile);
+					r++;
+				}
+
+				allActions[q](firstNeighboringTile);
+				q++;
+
+
 				if (firstCornerTile.SharesEdge(firstNeighboringTile, Tile.Direction.Right)
 				    && firstCornerTile.SharesEdge(secondNeighboringTile, Tile.Direction.Bottom))
 					break;
@@ -100,26 +135,6 @@ namespace AoC2020.Solutions
 				if (firstCornerTile.SharesEdge(firstNeighboringTile, Tile.Direction.Bottom)
 				    && firstCornerTile.SharesEdge(secondNeighboringTile, Tile.Direction.Right))
 					break;
-
-				if (rotationsCompleted < 4)
-				{
-					firstCornerTile.RotateTile();
-					rotationsCompleted++;
-				}
-				else if (horizFlipsCompleted < 4)
-				{
-					firstCornerTile.RotateTile();
-					firstCornerTile.FlipTile(Tile.FlipAcross.HorizontalLine);
-					horizFlipsCompleted++;
-				}
-				else if (vertFlipsCompleted < 4)
-				{
-					firstCornerTile.RotateTile();
-					firstCornerTile.FlipTile(Tile.FlipAcross.VerticalLine);
-					vertFlipsCompleted++;
-				}
-				else
-					throw new Exception("Something went wrong...");
 			}
 
 			Tile previousTile;
@@ -139,46 +154,33 @@ namespace AoC2020.Solutions
 						{
 							// this is the tile that we plan on putting at this i j position
 							var targetTile = _allTiles.First(x => x.Id == previousTile.MetEdges[a].thatId);
-							var rCompleted = 0;
-							var hFlipsCompleted = 0;
-							var vFlipsCompleted = 0;
-							var isFound = false;
+							q = 0;
+							var isFound = false; 
 							while (true)
 							{
-								if (previousTile.SharesEdge(targetTile, Tile.Direction.Right))
+								if (q >= allActions.Length)
+									break;
+
+								allActions[q](targetTile);
+								q++;
+
+
+								if (targetTile.SharesEdge(previousTile, Tile.Direction.Right))
 								{
 									isFound = true;
 									break;
 								}
 
-								if (rCompleted < 4)
+								if (targetTile.SharesEdge(previousTile, Tile.Direction.Bottom))
 								{
-									targetTile.RotateTile();
-									rCompleted++;
-									continue;
+									isFound = true;
+									break;
 								}
-
-								if (hFlipsCompleted < 4)
-								{
-									targetTile.RotateTile();
-									targetTile.FlipTile(Tile.FlipAcross.HorizontalLine);
-									hFlipsCompleted++;
-									continue;
-								}
-
-								if (vFlipsCompleted < 4)
-								{
-									targetTile.RotateTile();
-									targetTile.FlipTile(Tile.FlipAcross.VerticalLine);
-									vFlipsCompleted++;
-									continue;
-								}
-
-								break;
 							}
 
 							if (!isFound)
 								continue;
+							
 							image[i, j] = targetTile;
 							previousTile = targetTile;
 							break;
@@ -187,49 +189,23 @@ namespace AoC2020.Solutions
 					else // in between
 					{
 						// get the tile that is directly above us 
-						var topNeighboringTile = _allTiles.First(x => x.Id == image[i, j - 1].Id);
+						var topNeighboringTile = image[i, j - 1];
 						for (var a = 0; a < previousTile.MetEdges.Count; a++)
 						{
 							// this is the tile that we plan on putting here
 							var targetTile = _allTiles.First(x => x.Id == previousTile.MetEdges[a].thatId);
-
-							var rCompleted = 0;
-							var hFlipsCompleted = 0;
-							var vFlipsCompleted = 0;
 							var isFound = false;
-							while (true)
+							for (var n = 0; n < allActions.Length * 3; n++)
 							{
+								allActions[n % allActions.Length](targetTile);
 								if (previousTile.SharesEdge(targetTile, Tile.Direction.Right)
 								    && topNeighboringTile.SharesEdge(targetTile, Tile.Direction.Top))
 								{
+									image[i, j] = targetTile;
+									previousTile = targetTile;
 									isFound = true;
 									break;
 								}
-
-								if (rCompleted < 4)
-								{
-									targetTile.RotateTile();
-									rCompleted++;
-									continue;
-								}
-
-								if (hFlipsCompleted < 4)
-								{
-									targetTile.RotateTile();
-									targetTile.FlipTile(Tile.FlipAcross.HorizontalLine);
-									hFlipsCompleted++;
-									continue;
-								}
-
-								if (vFlipsCompleted < 4)
-								{
-									targetTile.RotateTile();
-									targetTile.FlipTile(Tile.FlipAcross.VerticalLine);
-									vFlipsCompleted++;
-									continue;
-								}
-
-								break;
 							}
 
 							if (!isFound)
@@ -237,7 +213,6 @@ namespace AoC2020.Solutions
 
 							image[i, j] = targetTile;
 							previousTile = targetTile;
-							break;
 						}
 					}
 				}
