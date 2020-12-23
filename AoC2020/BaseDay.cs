@@ -18,7 +18,7 @@ namespace AoC2020
 		public abstract string SolvePart2();
 
 		/// <summary>
-		/// The method that will be executed when solving a problem. Your implementation for each part should be private.
+		/// The method that will be executed when solving a problem.
 		/// </summary>
 		public void Solve()
 		{
