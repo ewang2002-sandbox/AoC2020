@@ -8,9 +8,9 @@ using AoC2020.RevisedSolutions;
 using AoC2020.Solutions;
 #endif
 
-var input = await File.ReadAllTextAsync(Path.Join("Inputs", "24.txt"));
+var input = await File.ReadAllTextAsync(Path.Join("Inputs", "25.txt"));
 #if GENERAL
-new Day24(input).Solve();
+new Day25(input).Solve();
 #else
 new Day24Revised(input).Solve();
 #endif
