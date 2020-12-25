@@ -16,8 +16,8 @@ namespace AoC2020.Solutions
 				.Split(Environment.NewLine + Environment.NewLine)
 				.ToArray();
 
-		public List<int> _player1Cards = new();
-		public List<int> _player2Cards = new();
+		private readonly List<int> _player1Cards = new();
+		private readonly List<int> _player2Cards = new();
 
 		public override string SolvePart1()
 		{
