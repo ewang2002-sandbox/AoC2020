@@ -19,8 +19,7 @@ namespace AoC2020.Solutions
 
 		public override string SolvePart1()
 		{
-
-			return string.Empty;
+			return string.Empty; 
 		}
 
 		public override string SolvePart2()

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+// Not going to lie. This is a terrible solution. 
+// You shouldn't look ahead. Your eyes won't be able to handle it.
+// Instead, look at the revised solution. :) 
 namespace AoC2020.Solutions
 {
 	/// <summary>

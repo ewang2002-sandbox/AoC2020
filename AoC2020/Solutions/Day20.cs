@@ -60,7 +60,7 @@ namespace AoC2020.Solutions
 						if (!outerEdge.SequenceEqual(innerEdge) && !outerEdge.SequenceEqual(innerEdge.Reverse()))
 							continue;
 
-						_allTiles[i].MetEdges.Add((thisSeq: outerEdge, thatId: innerTile.Id, thatSeq: innerEdge));
+						_allTiles[i].MetEdges.Add(innerTile.Id);
 					}
 				}
 			}
@@ -75,156 +75,317 @@ namespace AoC2020.Solutions
 			return ans.ToString();
 		}
 
-		private char[,] ConstructImage()
+		/// <summary>
+		/// Constructs an image. Took a few thousand years for me to figure out. 
+		/// </summary>
+		/// <returns>The image.</returns>
+		private Tile ConstructImage()
 		{
 			var lenOfSide = (int) Math.Sqrt(_allTiles.Count);
 			var image = new Tile[lenOfSide, lenOfSide];
 
-			var firstCornerTile = _allTiles.First(x => x.MetEdges.Count == 2);
-			_allTiles.Remove(firstCornerTile);
+			// Establish the first corner tile. 
+			var firstCornerTile = _allTiles
+				.First(x => x.MetEdges.Count == 2);
+			var usedTiles = new List<Tile> {firstCornerTile};
+
+			var neighboringTiles = firstCornerTile.MetEdges
+				// We dont want tiles that have already been used.
+				.Where(x => !usedTiles.Select(x => x.Id).Contains(x))
+				.Select(x => _allTiles.First(z => z.Id == x))
+				.ToArray();
+
+			// Basically orient the corner tile until the neighboring tiles "agree" 
+			for (var i = 0; i < 8; i++)
+			{
+				InternalModifyTile(neighboringTiles[0], i);
+				for (var j = 0; j < 8; j++)
+				{
+					InternalModifyTile(neighboringTiles[1], j);
+					for (var k = 0; k < 8; k++)
+					{
+						InternalModifyTile(firstCornerTile, k);
+
+						if (firstCornerTile.RightEdge.SequenceEqual(neighboringTiles[1].LeftEdge)
+						    && firstCornerTile.BottomEdge.SequenceEqual(neighboringTiles[0].TopEdge))
+							goto finishedCorner;
+
+						if (firstCornerTile.RightEdge.SequenceEqual(neighboringTiles[0].LeftEdge)
+						    && firstCornerTile.BottomEdge.SequenceEqual(neighboringTiles[1].TopEdge))
+							goto finishedCorner;
+					}
+				}
+			}
+
+			finishedCorner:
 			image[0, 0] = firstCornerTile;
 
-			// Rotate the corner tile so we won't go out of bounds 
-			var firstNeighboringTile = _allTiles.First(x => x.Id == firstCornerTile.MetEdges[0].thatId);
-			var secondNeighboringTile = _allTiles.First(x => x.Id == firstCornerTile.MetEdges[1].thatId);
-			var q = 0;
-			var r = 0;
-			var s = 0;
-			var allActions = new Action<Tile>[]
+			// Now we can go through each possible tile 
+			for (var i = 0; i < lenOfSide; i++)
 			{
-				tile =>
+				for (var j = 0; j < lenOfSide; j++)
 				{
-					tile.RotateTile();
-					tile.FlipTile(Tile.FlipAcross.HorizontalLine);
-				},
-				tile =>
-				{
-					tile.RotateTile();
-					tile.FlipTile(Tile.FlipAcross.VerticalLine);
-				},
-				tile => tile.RotateTile()
-			};
-
-			while (true)
-			{
-				if (s >= allActions.Length)
-					s = 0;
-
-				if (r >= allActions.Length)
-				{
-					r = 0;
-					allActions[s](firstCornerTile);
-					s++;
-				}
-
-				if (q >= allActions.Length)
-				{
-					q = 0;
-					allActions[r](secondNeighboringTile);
-					r++;
-				}
-
-				allActions[q](firstNeighboringTile);
-				q++;
-
-
-				if (firstCornerTile.SharesEdge(firstNeighboringTile, Tile.Direction.Right)
-				    && firstCornerTile.SharesEdge(secondNeighboringTile, Tile.Direction.Bottom))
-					break;
-
-				if (firstCornerTile.SharesEdge(firstNeighboringTile, Tile.Direction.Bottom)
-				    && firstCornerTile.SharesEdge(secondNeighboringTile, Tile.Direction.Right))
-					break;
-			}
-
-			Tile previousTile;
-			for (var i = 0; i < image.GetLength(0); i++)
-			{
-				previousTile = image[i, 0];
-
-				for (var j = 0; j < image.GetLength(1); j++)
-				{
-					if (i == j && i == 0)
+					if (i == 0 && j == 0)
 						continue;
 
-					if (j == 0)
+					// The left-most tiles
+					// We need to check the top neighbors instead of the left tile. 
+					if (i != 0 && j == 0)
 					{
-						// get the previous tile (left tile) that neighbors w/ the right tile (this tile).
-						for (var a = 0; a < previousTile.MetEdges.Count; a++)
+						var topTile = image[i - 1, 0];
+						var possibleTiles = _allTiles
+							.Where(x => x.MetEdges.Contains(topTile.Id) && !usedTiles.Contains(x))
+							.ToArray();
+
+						Tile foundRotatedTile = null;
+						foreach (var t in possibleTiles)
 						{
-							// this is the tile that we plan on putting at this i j position
-							var targetTile = _allTiles.First(x => x.Id == previousTile.MetEdges[a].thatId);
-							q = 0;
-							var isFound = false; 
-							while (true)
+							if (t.TopEdge.SequenceEqual(topTile.BottomEdge))
 							{
-								if (q >= allActions.Length)
-									break;
-
-								allActions[q](targetTile);
-								q++;
-
-
-								if (targetTile.SharesEdge(previousTile, Tile.Direction.Right))
-								{
-									isFound = true;
-									break;
-								}
-
-								if (targetTile.SharesEdge(previousTile, Tile.Direction.Bottom))
-								{
-									isFound = true;
-									break;
-								}
+								foundRotatedTile = t;
+								break;
 							}
 
-							if (!isFound)
-								continue;
-							
-							image[i, j] = targetTile;
-							previousTile = targetTile;
+							foreach (var orientedTile in GetPossibleOrientations(t))
+							{
+								if (!orientedTile.TopEdge.SequenceEqual(topTile.BottomEdge))
+									continue;
+
+								foundRotatedTile = orientedTile;
+								break;
+							}
+
+							if (foundRotatedTile != null)
+								break;
+						}
+
+						if (foundRotatedTile == null)
+							throw new Exception("Something went wrong when trying to find the right tile.");
+
+						usedTiles.Add(foundRotatedTile);
+						image[i, j] = foundRotatedTile;
+						continue;
+					}
+
+					// Otherwise, check the left tile (like normal). 
+					var prevTile = image[i, j - 1];
+					var possTileToUse = _allTiles
+						.Where(x => x.MetEdges.Contains(prevTile.Id) && !usedTiles.Contains(x))
+						.ToArray();
+
+					Tile rotatedTile = null;
+					foreach (var t in possTileToUse)
+					{
+						if (t.LeftEdge.SequenceEqual(prevTile.RightEdge))
+						{
+							rotatedTile = t;
 							break;
 						}
-					}
-					else // in between
-					{
-						// get the tile that is directly above us 
-						var topNeighboringTile = image[i, j - 1];
-						for (var a = 0; a < previousTile.MetEdges.Count; a++)
-						{
-							// this is the tile that we plan on putting here
-							var targetTile = _allTiles.First(x => x.Id == previousTile.MetEdges[a].thatId);
-							var isFound = false;
-							for (var n = 0; n < allActions.Length * 3; n++)
-							{
-								allActions[n % allActions.Length](targetTile);
-								if (previousTile.SharesEdge(targetTile, Tile.Direction.Right)
-								    && topNeighboringTile.SharesEdge(targetTile, Tile.Direction.Top))
-								{
-									image[i, j] = targetTile;
-									previousTile = targetTile;
-									isFound = true;
-									break;
-								}
-							}
 
-							if (!isFound)
+						foreach (var orientedTile in GetPossibleOrientations(t))
+						{
+							if (!orientedTile.LeftEdge.SequenceEqual(prevTile.RightEdge))
 								continue;
 
-							image[i, j] = targetTile;
-							previousTile = targetTile;
+							rotatedTile = orientedTile;
+							break;
 						}
+
+						if (rotatedTile != null)
+							break;
 					}
+
+					if (rotatedTile == null)
+						throw new Exception("Something went wrong when trying to find the right tile.");
+					usedTiles.Add(rotatedTile);
+					image[i, j] = rotatedTile;
 				}
 			}
 
-			return new char[1, 1];
+
+			// Now we can combine the reconstructed image to make one big image
+			// Convert each tile to a string for easier parsing 
+			var strMatrix = new string[lenOfSide, lenOfSide];
+			for (var x = 0; x < image.GetLength(0); x++)
+			{
+				for (var y = 0; y < image.GetLength(1); y++)
+				{
+					var sb = new StringBuilder();
+					for (var z = 1; z < image[x, y].Arrangement.GetLength(0) - 1; z++)
+					{
+						for (var w = 1; w < image[x, y].Arrangement.GetLength(1) - 1; w++)
+							sb.Append(image[x, y].Arrangement[z, w]);
+
+						sb.AppendLine();
+					}
+
+					strMatrix[x, y] = sb.ToString();
+				}
+			}
+
+			// Combine it all 
+			var finalStrBuilder = new StringBuilder();
+			for (var x = 0; x < strMatrix.GetLength(0); x++)
+			{
+				var z = 0;
+				// It is assumed that z = 10 because the tiles are
+				// 10 x 10 
+				// Then we subtract 2 because we want to get rid of the borders
+				while (z < 8)
+				{
+					for (var y = 0; y < strMatrix.GetLength(1); y++)
+						finalStrBuilder.Append(strMatrix[x, y].Split(Environment.NewLine)[z]);
+
+					finalStrBuilder.AppendLine();
+					z++;
+				}
+			}
+
+			// And now break it up. 
+			var imgStr = finalStrBuilder.ToString();
+			var imgStrToCharArray = imgStr
+				.Split(Environment.NewLine)
+				.Select(x => x.ToCharArray())
+				.ToArray();
+			var lenOfOneSide = imgStr.Split(Environment.NewLine)[0].Length;
+			var newMatrix = new char[lenOfOneSide, lenOfOneSide];
+			for (var i = 0; i < imgStrToCharArray.Length; i++)
+			for (var j = 0; j < imgStrToCharArray[i].Length; j++)
+				newMatrix[i, j] = imgStrToCharArray[i][j];
+			return new Tile(1, newMatrix);
+		}
+
+		// There are 8 possible orientations a tile can be.
+		// Go through each action four times
+		// i.e. x % 2, where x <= 7. 
+		private readonly Action<Tile>[] _allActions =
+		{
+			t => t.FlipTile(Tile.FlipAcross.HorizontalLine),
+			t =>
+			{
+				t.FlipTile(Tile.FlipAcross.HorizontalLine);
+				t.FlipTile(Tile.FlipAcross.VerticalLine);
+			}
+		};
+
+		/// <summary>
+		/// Internally modifies the tile's orientation. 
+		/// </summary>
+		/// <param name="t">The tile.</param>
+		/// <param name="i">The index to access the list of actions.</param>
+		private void InternalModifyTile(Tile t, int i)
+		{
+			if (i != 0 && i % 2 == 0)
+			{
+				t.FlipTile(Tile.FlipAcross.VerticalLine);
+				t.RotateTile();
+			}
+
+			_allActions[i % 2](t);
+		}
+
+		/// <summary>
+		/// Gets all possible orientations for this tile. 
+		/// </summary>
+		/// <param name="t">The tile.</param>
+		/// <returns>The orientations that can be used.</returns>
+		private IList<Tile> GetPossibleOrientations(Tile t)
+		{
+			var l = new List<Tile>();
+			var clonedCopy = t.DeepClone();
+			for (var i = 0; i < 8; i++)
+			{
+				InternalModifyTile(clonedCopy, i);
+				l.Add(clonedCopy.DeepClone());
+			}
+
+			var anotherCopy = t.DeepClone();
+			for (var i = 0; i < 4; i++)
+			{
+				anotherCopy.RotateTile();
+				l.Add(anotherCopy.DeepClone());
+			}
+
+			return l;
 		}
 
 		public override string SolvePart2()
 		{
 			var image = ConstructImage();
-			return string.Empty;
+			// number of '#'
+			var numOfPound = 0;
+			for (var i = 0; i < image.Arrangement.GetLength(0); i++)
+			for (var j = 0; j < image.Arrangement.GetLength(1); j++)
+				numOfPound += image[i, j] == '#' ? 1 : 0;
+			
+			var allPossibleOrientations = GetPossibleOrientations(image);
+			var possNumOfSeaMonsters = -1;
+			var numPoundForSeaMonster = -1; 
+			foreach (var img in allPossibleOrientations)
+			{
+				var numSeaMonsters = 0;
+				var used = new List<(int i, int j)>();
+				for (var i = 0; i < img.Arrangement.GetLength(0); i++)
+				{
+					for (var j = 0; j < img.Arrangement.GetLength(1); j++)
+					{
+						var (isSeaMonster, coordsUsed) = IsSeaMonster(img, i, j, used);
+						if (!isSeaMonster) 
+							continue;
+						
+						numSeaMonsters++;
+						used.AddRange(coordsUsed);
+					}
+				}
+
+				if (possNumOfSeaMonsters < numSeaMonsters)
+				{
+					possNumOfSeaMonsters = numSeaMonsters;
+					numPoundForSeaMonster = used.Count;
+				}
+			}
+
+			return (numOfPound - numPoundForSeaMonster).ToString();
+		}
+
+		private static (bool isSeaMonster, List<(int i, int j)> coordsUsed)
+			IsSeaMonster(Tile image, int i, int j, List<(int i, int j)> alreadyUsed)
+		{
+			var seaMonsterBody = new[]
+			{
+				(0, 18),
+				(1, 0),
+				(1, 5),
+				(1, 6),
+				(1, 11),
+				(1, 12),
+				(1, 17),
+				(1, 18),
+				(1, 19),
+				(2, 1),
+				(2, 4),
+				(2, 7),
+				(2, 10),
+				(2, 13),
+				(2, 16)
+			};
+
+			var used = new List<(int i, int j)>();
+			foreach (var (di, dj) in seaMonsterBody)
+			{
+				if (i + di >= 0 && i + di < image.Arrangement.GetLength(0)
+				                && j + dj >= 0 && j + dj < image.Arrangement.GetLength(1)
+				                && image[i + di, j + dj] == '#'
+				                && !alreadyUsed.Contains((i + di, j + dj)))
+				{
+					used.Add((i + di, j + dj));
+					continue;
+				}
+
+				return (false, new List<(int i, int j)>());
+			}
+
+			return (true, used);
 		}
 	}
 
@@ -236,19 +397,44 @@ namespace AoC2020.Solutions
 		public char[,] Arrangement { get; private set; }
 
 		/// <summary>
-		///  The edges.
+		/// The original tile arrangement.
 		/// </summary>
-		public IList<char>[] Edges { get; init; }
+		public char[,] OriginalArrangement { get; }
+
+		/// <summary>
+		/// The edges. [0] => Top; [1] => Right; [2] => Bottom; [3] => Left
+		/// </summary>
+		public IList<char>[] Edges { get; private set; }
+
+		/// <summary>
+		/// The top edge.
+		/// </summary>
+		public IList<char> TopEdge { get; private set; }
+
+		/// <summary>
+		/// The right edge.
+		/// </summary>
+		public IList<char> RightEdge { get; private set; }
+
+		/// <summary>
+		/// The bottom edge.
+		/// </summary>
+		public IList<char> BottomEdge { get; private set; }
+
+		/// <summary>
+		/// The left edge.
+		/// </summary>
+		public IList<char> LeftEdge { get; private set; }
 
 		/// <summary>
 		/// The tile's ID.
 		/// </summary>
-		public int Id { get; init; }
+		public int Id { get; }
 
 		/// <summary>
 		/// All the "linked" tiles.
 		/// </summary>
-		public List<(IList<char> thisSeq, int thatId, IList<char> thatSeq)> MetEdges { get; init; } = new();
+		public List<int> MetEdges { get; } = new();
 
 		/// <summary>
 		/// Creates a new Tile object. 
@@ -258,26 +444,41 @@ namespace AoC2020.Solutions
 		public Tile(int id, char[,] arrangement)
 		{
 			Id = id;
-
 			Arrangement = arrangement;
+			OriginalArrangement = arrangement.Clone() as char[,];
+			UpdateEdges();
+		}
 
+		/// <summary>
+		/// Resets the tile back to its original version (when it was found). 
+		/// </summary>
+		public void ResetToOriginal()
+		{
+			Arrangement = OriginalArrangement.Clone() as char[,];
+			UpdateEdges();
+		}
+
+		/// <summary>
+		/// Returns a deep clone of this tile. 
+		/// </summary>
+		/// <returns>A deep clone of this tile.</returns>
+		public Tile DeepClone()
+			=> new(Id, Arrangement.Clone() as char[,]);
+
+		private void UpdateEdges()
+		{
 			// get tile info
 			var topEdge = new List<char>();
 			var bottomEdge = new List<char>();
 			var leftEdge = new List<char>();
 			var rightEdge = new List<char>();
-			for (var i = 0; i < arrangement.GetLength(0); i++)
+			for (var i = 0; i < Arrangement.GetLength(0); i++)
 			{
-				topEdge.Add(arrangement[0, i]);
-				bottomEdge.Add(arrangement[arrangement.GetLength(0) - 1, i]);
-				leftEdge.Add(arrangement[i, 0]);
-				rightEdge.Add(arrangement[i, arrangement.GetLength(1) - 1]);
+				topEdge.Add(Arrangement[0, i]);
+				bottomEdge.Add(Arrangement[Arrangement.GetLength(0) - 1, i]);
+				leftEdge.Add(Arrangement[i, 0]);
+				rightEdge.Add(Arrangement[i, Arrangement.GetLength(1) - 1]);
 			}
-
-			Debug.Assert(topEdge.Count == 10
-			             && bottomEdge.Count == 10
-			             && leftEdge.Count == 10
-			             && rightEdge.Count == 10);
 
 			Edges = new IList<char>[]
 			{
@@ -286,6 +487,11 @@ namespace AoC2020.Solutions
 				bottomEdge,
 				leftEdge
 			};
+
+			TopEdge = topEdge;
+			BottomEdge = bottomEdge;
+			LeftEdge = leftEdge;
+			RightEdge = rightEdge;
 		}
 
 		/// <summary>
@@ -320,19 +526,27 @@ namespace AoC2020.Solutions
 			}
 
 			Arrangement = newMatrix;
+			UpdateEdges();
 		}
 
 		/// <summary>
 		/// Rotates the tile 90 degrees clockwise. 
 		/// </summary>
-		public void RotateTile()
+		public void RotateTile(int amt = 1)
 		{
-			var newMatrix = new char[Arrangement.GetLength(0), Arrangement.GetLength(1)];
-			for (var r = 0; r < Arrangement.GetLength(0); r++)
-			for (var c = 0; c < Arrangement.GetLength(1); c++)
-				newMatrix[c, Arrangement.GetLength(0) - 1 - r] = Arrangement[r, c];
+			amt %= 4;
+			while (amt != 0)
+			{
+				var newMatrix = new char[Arrangement.GetLength(0), Arrangement.GetLength(1)];
+				for (var r = 0; r < Arrangement.GetLength(0); r++)
+				for (var c = 0; c < Arrangement.GetLength(1); c++)
+					newMatrix[c, Arrangement.GetLength(0) - 1 - r] = Arrangement[r, c];
 
-			Arrangement = newMatrix;
+				Arrangement = newMatrix;
+				amt--;
+			}
+
+			UpdateEdges();
 		}
 
 		/// <summary>
@@ -347,7 +561,9 @@ namespace AoC2020.Solutions
 		/// <returns>The string representation of the tile object.</returns>
 		public override string ToString()
 		{
-			var sb = new StringBuilder();
+			var sb = new StringBuilder()
+				.Append($"ID: {Id}")
+				.AppendLine();
 			for (var i = 0; i < Arrangement.GetLength(0); i++)
 			{
 				for (var j = 0; j < Arrangement.GetLength(1); j++)
@@ -358,66 +574,12 @@ namespace AoC2020.Solutions
 			return sb.ToString();
 		}
 
-		/// <summary>
-		/// Checks whether the tile shares an edge with another tile. 
-		/// </summary>
-		/// <param name="tile">The other tile to check.</param>
-		/// <param name="dir">The direction to check. Checking the right and bottom tiles will result in the program comparing the right or bottom tiles of this object with the left or top tiles of the given object. Checking the left and top tiles will result in the program comparing the left or top tiles of this object with the right or bottom tiles of the given object.</param>
-		/// <returns></returns>
-		public bool SharesEdge(Tile tile, Direction dir)
-		{
-			var thisEdge = new List<char>();
-			var thatEdge = new List<char>();
-
-			for (var i = 0; i < tile.Arrangement.GetLength(0); i++)
-			{
-				switch (dir)
-				{
-					case Direction.Bottom:
-					{
-						thisEdge.Add(Arrangement[Arrangement.GetLength(0) - 1, i]);
-						thatEdge.Add(tile.Arrangement[0, i]);
-						break;
-					}
-					case Direction.Right:
-					{
-						thisEdge.Add(Arrangement[i, Arrangement.GetLength(1) - 1]);
-						thatEdge.Add(tile.Arrangement[i, 0]);
-						break;
-					}
-					case Direction.Left:
-					{
-						thisEdge.Add(Arrangement[i, 0]);
-						thatEdge.Add(tile.Arrangement[i, tile.Arrangement.GetLength(1) - 1]);
-						break;
-					}
-					case Direction.Top:
-					{
-						thisEdge.Add(Arrangement[0, i]);
-						thatEdge.Add(tile.Arrangement[tile.Arrangement.GetLength(0) - 1, i]);
-						break;
-					}
-					default:
-						throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
-				}
-			}
-
-			return thatEdge.SequenceEqual(thisEdge);
-		}
-
-
-		public enum Direction
-		{
-			Left,
-			Right,
-			Top,
-			Bottom
-		}
-
 		public enum FlipAcross
 		{
 			HorizontalLine,
 			VerticalLine
 		}
+
+		public char this[int i, int j] => Arrangement[i, j];
 	}
 }
